@@ -4,7 +4,7 @@ import urllib2
 
 from django.db import models
 from alipay import conf
-from alipay.helpers import duplicate_out_trade_no, address_in_network
+from alipay.helpers import duplicate_out_trade_no
 
 class AlipayBaseModel(models.Model):
     """
@@ -13,12 +13,12 @@ class AlipayBaseModel(models.Model):
         # base parameter
     notify_time = models.DateTimeField(blank=True, null=True)
     notify_type = models.CharField(blank=True, null=True, max_length=32)
-    notify_id = models.CharField(blank=True, null=True, max_length=64)
+    notify_id = models.CharField(blank=True, null=True, max_length=128)
     sign_type = models.CharField(blank=True, null=True, max_length=3)
     sign = models.CharField(blank=True, null=True, max_length=64)
         # business parameter
         # partner trade no
-    out_trade_no = models.CharField(blank=True, null=True, max_length=64)
+    out_trade_no = models.CharField(max_length=64, unique=True)
     subject = models.CharField(blank=True, null=True, max_length=256)
     payment_type = models.CharField(blank=True, null=True, max_length=4)
         # alipay trade no
@@ -77,8 +77,6 @@ class AlipayBaseModel(models.Model):
         self._verify_postback()  
         if not self.flag:
             if self.is_transaction():
-                if not address_in_network(self.ipaddress, conf.ALIPAY_NOTIFY_IP):
-                    self.set_flag("Invalid alipay notify IP. (%s)" % self.ipaddress)
                 if duplicate_out_trade_no(self):
                     self.set_flag("Duplicate out trade no. (%s)" % self.out_trade_no)
                 if self.seller_id != conf.SELLER_ID:
@@ -109,4 +107,3 @@ class AlipayBaseModel(models.Model):
     def _verify_postback(self):
         if self.response != "true":
             self.set_flag("Invalid postback: %s" % self.response)
-
