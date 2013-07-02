@@ -5,9 +5,9 @@ from django import forms
 from alipay import conf
 from alipay.widgets import ValueHiddenInput
 
-class AliPaySendGoodsForm(forms.Form):
+class AlipaySendGoodsForm(forms.Form):
     """
-    AliPay Send Goods confirm by platform
+    Alipay Send Goods confirm by platform
     """
         # base parameters
     service = forms.CharField(widget=ValueHiddenInput(), initial=conf.SERVICE[2])

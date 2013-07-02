@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import admin
-from alipay.create_partner_trade_by_buyer.ptn.models import AliPayPTN
+from alipay.trade_create_by_buyer.ptn.models import AlipayPTN
 
-class AliPayPTNAdmin(admin.ModelAdmin):
+class AlipayPTNAdmin(admin.ModelAdmin):
     date_hierarchy = 'gmt_payment'
     list_display = [
         "__unicode__", "flag", "flag_info", "out_trade_no", "trade_no", "body", 
@@ -12,4 +12,4 @@ class AliPayPTNAdmin(admin.ModelAdmin):
     search_fields = ["out_trade_no", "trade_no"]
 
 
-admin.site.register(AliPayPTN, AliPayPTNAdmin)
+admin.site.register(AlipayPTN, AlipayPTNAdmin)

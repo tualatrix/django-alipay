@@ -5,45 +5,41 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
-from alipay.create_direct_pay_by_user.dpn.models import AliPayDPN
-from alipay.create_direct_pay_by_user.dpn.forms import AliPayDPNForm
+from alipay.trade_create_by_buyer.ptn.forms import AlipayPTNForm
+from alipay.trade_create_by_buyer.ptn.models import AlipayPTN
 
 @require_POST
 @csrf_exempt
-def dpn(request, item_check_callable=None):
+def ptn(request, item_check_callable=None):
     """
     Recevied notify from alipay by POST method
     """
     flag = None
-    dpn_obj = None
+    ptn_obj = None
     post_data = request.POST.copy()
         # cleanup data
     data = {}
     for k,v in post_data.items():
-        data[k] = v[0]
+        data[k] = v
         # valid data
-    form = AliPayDPNForm(data)
+    form = AlipayPTNForm(data)
     if form.is_valid():
         try:
-            dpn_obj = form.save(commit=False)
+            ptn_obj = form.save(commit=False)
         except Exception, e:
             flag = 'Exception while processing: %s'% e
-
     else:
         flag = 'Invalid: %s'% form.errors
-    if dpn_obj is None:
-        dpn_obj = AliPayDPN()
+    if ptn_obj is None:
+        ptn_obj = AlipayPTN()
 
        #Set query params and sender's IP address
-    dpn_obj.initialize(request)
+    ptn_obj.initialize(request)
 
     if flag is not None:
         #We save errors in the flag field
-        dpn_obj.set_flag(flag)
+        ptn_obj.set_flag(flag)
     else:
-        dpn_obj.verify(item_check_callable)
-    dpn_obj.save()
-
+        ptn_obj.verify(item_check_callable)
+    ptn_obj.save()
     return HttpResponse('success')
-
-

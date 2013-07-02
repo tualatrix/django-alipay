@@ -8,7 +8,7 @@ from alipay.widgets import ValueHiddenInput
 from alipay.helpers import make_sign, get_form_data, urldecode
 
 
-class AliPayPaymentBaseForm(forms.Form):
+class AlipayPaymentBaseForm(forms.Form):
     """
     request interface. POST method, HTTPS
     """
@@ -29,7 +29,7 @@ class AliPayPaymentBaseForm(forms.Form):
     subject = forms.CharField(widget=ValueHiddenInput(), max_length=256)
     payment_type = forms.CharField(widget=ValueHiddenInput(), initial=conf.PAYMENT_TYPE[0])
         # 买家 卖家 信息
-    seller_id = forms.CharField(widget=ValueHiddenInput(), max_length=32, initial=conf.SELLER_ID)
+    seller_id = forms.CharField(widget=ValueHiddenInput(), max_length=32)
     buyer_id = forms.CharField(widget=ValueHiddenInput(), max_length=32)
     seller_account_name = forms.CharField(widget=ValueHiddenInput(), max_length=100)
     buyer_account_name = forms.CharField(widget=ValueHiddenInput(), max_length=100)
@@ -44,7 +44,6 @@ class AliPayPaymentBaseForm(forms.Form):
     total_fee = forms.FloatField(widget=ValueHiddenInput(), min_value=0.01, max_value=1000000.00)
     body = forms.CharField(widget=ValueHiddenInput(), max_length=1000)
     show_url = forms.CharField(widget=ValueHiddenInput(), max_length=400)
-    paymethod = forms.CharField(widget=ValueHiddenInput(), initial=conf.PAYMETHOD[1])
     discount = forms.FloatField(widget=ValueHiddenInput())
         # CTU 支付宝风险稽查系统，需开通
     need_ctu_check = forms.CharField(widget=ValueHiddenInput())  # Y/N
@@ -60,12 +59,18 @@ class AliPayPaymentBaseForm(forms.Form):
     product_type = forms.CharField(widget=ValueHiddenInput(), max_length=50)
         # 需开通快捷登录
     token = forms.CharField(widget=ValueHiddenInput(), max_length=40)
-    
+
+    def __init__(self, *args, **kwargs):
+        super(AlipayPaymentBaseForm, self).__init__(*args, **kwargs)
+
+        data = get_form_data(self)
+        sign = make_sign(data)
+        self.fields['sign'].initial = sign
+
     def get_action(self):
         return '%s?_input_charset=%s'% (conf.ALIPAY_GATEWAY, self['_input_charset'].value())
 
-
-class AliPayBaseForm(forms.ModelForm):
+class AlipayBaseForm(forms.ModelForm):
     """
     Some models field
     """
@@ -75,12 +80,4 @@ class AliPayBaseForm(forms.ModelForm):
     gmt_close = forms.DateTimeField(required=False, input_formats=conf.ALIPAY_DATE_FORMAT)
     gmt_refund = forms.DateTimeField(required=False, input_formats=conf.ALIPAY_DATE_FORMAT)
     gmt_logistics_modify = forms.DateTimeField(required=False, input_formats=conf.ALIPAY_DATE_FORMAT)
-
-    def clean_sign(self):
-        data = get_form_data(self)
-        sign = make_sign(data)
-        if sign != data.get('sign'):
-            self._errors['sign'] = self.error_class(['sign error!'])
-        return sign
-
 

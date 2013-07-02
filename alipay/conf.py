@@ -65,6 +65,3 @@ TRADE_STATUS = (
         'COD_WAIT_BUYER_PAY',           # 等待买家签收付款（货到付款）
         'COD_WAIT_SYS_PAY_SELLER',      # 签收成功等待系统打款给卖家（货到付款）
         )
-
-
-

@@ -6,9 +6,9 @@ from django.db import models
 from alipay import conf
 from alipay.helpers import duplicate_out_trade_no, address_in_network
 
-class AliPayBaseModel(models.Model):
+class AlipayBaseModel(models.Model):
     """
-    AliPay base model
+    Alipay base model
     """
         # base parameter
     notify_time = models.DateTimeField(blank=True, null=True)
@@ -40,7 +40,7 @@ class AliPayBaseModel(models.Model):
     is_total_fee_adjust = models.CharField(blank=True, null=True, max_length=1) # Y/N
     use_coupon = models.CharField(blank=True, null=True, max_length=1) # Y/N
     
-    # Non-AliPay Variables 
+    # Non-Alipay Variables 
     ipaddress = models.IPAddressField(blank=True)
     flag = models.BooleanField(default=False, blank=True)
     flag_code = models.CharField(max_length=16, blank=True)

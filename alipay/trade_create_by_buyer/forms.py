@@ -3,14 +3,14 @@
 from django import forms
 
 from alipay import conf
-from alipay.forms import AliPayPaymentBaseForm
+from alipay.forms import AlipayPaymentBaseForm
 from alipay.widgets import ValueHiddenInput
 
-class AliPayPartnerTradeForm(AliPayPaymentBaseForm):
+class AlipayPartnerTradeForm(AlipayPaymentBaseForm):
     """
-    AliPay Partner Trade Form
+    Alipay Partner Trade Form
     """
-    service = forms.CharField(widget=ValueHiddenInput(), initial=conf.SERVICE[1])
+    service = forms.CharField(widget=ValueHiddenInput(), initial=conf.SERVICE[3])
         # 担保交易 物流
     logistics_type = forms.CharField(widget=ValueHiddenInput(), initial=conf.LOGISTICS_TYPE[0])
     logistics_fee = forms.CharField(widget=ValueHiddenInput(), initial='0.00')
@@ -32,4 +32,3 @@ class AliPayPartnerTradeForm(AliPayPaymentBaseForm):
     receive_zip = forms.CharField(widget=ValueHiddenInput(), max_length=20)
     receive_phone = forms.CharField(widget=ValueHiddenInput(), max_length=30)
     receive_mobile = forms.CharField(widget=ValueHiddenInput())
-
