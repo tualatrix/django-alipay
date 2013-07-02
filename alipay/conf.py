@@ -4,10 +4,10 @@ from django.conf import settings
 # COD Cash On Delivery 货到付款
 
 # 合作者身份 ID，以 2088 开头的 16 位纯数字组成
-PARTNER = getattr(settings, 'ALIPAY_PARTNER', '2088123456789012')
+PARTNER = getattr(settings, 'ALIPAY_PARTNER', '')
 # private key for sign
-PRIVATE_KEY = getattr(settings, 'ALIPAY_PRIVATE_KEY', 'unknown key')
-SELLER_ID = getattr(settings, 'ALIPAY_SELLER_ID', 'unknow seller id')
+PRIVATE_KEY = getattr(settings, 'ALIPAY_PRIVATE_KEY', '')
+SELLER_ID = getattr(settings, 'ALIPAY_SELLER_ID', '')
 
 # 支付宝网关
 ALIPAY_GATEWAY = 'https://mapi.alipay.com/gateway.do'
