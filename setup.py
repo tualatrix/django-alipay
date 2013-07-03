@@ -14,10 +14,7 @@ setup(
     platforms=['noarch'],
     packages=[
         'alipay',
-        'alipay.create_direct_pay_by_user',
-        'alipay.create_direct_pay_by_user.dpn',
-        'alipay.create_partner_trade_by_buyer',
-        'alipay.create_partner_trade_by_buyer.ptn',
+        'alipay.trade_create_by_buyer.ptn',
         'alipay.send_goods_confirm_by_platform',
     ],
     include_package_data=True,
