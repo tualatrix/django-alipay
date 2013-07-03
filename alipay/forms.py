@@ -8,18 +8,31 @@ from alipay.widgets import ValueHiddenInput
 from alipay.helpers import make_sign, get_form_data, urldecode
 
 
-class AlipayPaymentBaseForm(forms.Form):
-    """
-    request interface. POST method, HTTPS
-    """
-        # base parameters
-    service = forms.CharField(widget=ValueHiddenInput(), initial=conf.SERVICE[0])
+class AlipaySignableForm(forms.Form):
+    service = forms.CharField(widget=ValueHiddenInput())
     partner = forms.CharField(widget=ValueHiddenInput(), max_length=16, initial=conf.PARTNER)
     # 商户网站使用的编码格式，如utf-8、gbk、gb2312等 
     _input_charset = forms.CharField(widget=ValueHiddenInput(), initial='utf-8')
     # DSA、RSA、MD5三个值可选，必须大写  
-    sign_type = forms.CharField(widget=ValueHiddenInput(), initial='MD5')
     sign = forms.CharField(widget=ValueHiddenInput())
+    sign_type = forms.CharField(widget=ValueHiddenInput(), initial='MD5')
+
+    def __init__(self, *args, **kwargs):
+        super(AlipaySignableForm, self).__init__(*args, **kwargs)
+
+        data = get_form_data(self)
+        sign = make_sign(data)
+        self.fields['sign'].initial = sign
+
+    def get_action(self):
+        return '%s?_input_charset=%s'% (conf.ALIPAY_GATEWAY, self['_input_charset'].value())
+
+
+class AlipayPaymentBaseForm(AlipaySignableForm):
+    """
+    request interface. POST method, HTTPS
+    """
+        # base parameters
     notify_url = forms.CharField(widget=ValueHiddenInput())
     return_url = forms.CharField(widget=ValueHiddenInput())
         # 需开通
@@ -60,15 +73,6 @@ class AlipayPaymentBaseForm(forms.Form):
         # 需开通快捷登录
     token = forms.CharField(widget=ValueHiddenInput(), max_length=40)
 
-    def __init__(self, *args, **kwargs):
-        super(AlipayPaymentBaseForm, self).__init__(*args, **kwargs)
-
-        data = get_form_data(self)
-        sign = make_sign(data)
-        self.fields['sign'].initial = sign
-
-    def get_action(self):
-        return '%s?_input_charset=%s'% (conf.ALIPAY_GATEWAY, self['_input_charset'].value())
 
 class AlipayBaseForm(forms.ModelForm):
     """
@@ -80,4 +84,3 @@ class AlipayBaseForm(forms.ModelForm):
     gmt_close = forms.DateTimeField(required=False, input_formats=conf.ALIPAY_DATE_FORMAT)
     gmt_refund = forms.DateTimeField(required=False, input_formats=conf.ALIPAY_DATE_FORMAT)
     gmt_logistics_modify = forms.DateTimeField(required=False, input_formats=conf.ALIPAY_DATE_FORMAT)
-

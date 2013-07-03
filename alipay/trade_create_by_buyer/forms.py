@@ -8,7 +8,7 @@ from alipay.widgets import ValueHiddenInput
 
 class AlipayPartnerTradeForm(AlipayPaymentBaseForm):
     """
-    Alipay Partner Trade Form
+    AliPay Partner Trade Form
     """
     service = forms.CharField(widget=ValueHiddenInput(), initial=conf.SERVICE[3])
         # 担保交易 物流
