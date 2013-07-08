@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 
 from alipay import conf 
 from alipay.widgets import ValueHiddenInput
-from alipay.helpers import make_sign, get_form_data, urldecode
+from alipay.helpers import make_sign, get_form_data
 
 
 class AlipaySignableForm(forms.Form):
