@@ -77,8 +77,6 @@ class AlipayBaseModel(models.Model):
         self._verify_postback()  
         if not self.flag:
             if self.is_transaction():
-                if duplicate_out_trade_no(self):
-                    self.set_flag("Duplicate out trade no. (%s)" % self.out_trade_no)
                 if self.seller_id != conf.SELLER_ID:
                     self.set_flag("Invalid seller id. (%s)" % self.seller_id)
                 if callable(item_check_callable):
